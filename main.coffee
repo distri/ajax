@@ -2,13 +2,13 @@
 
 module.exports = ->
   ajax = (options={}) ->
-    {headers, method, path, responseType} = options
+    {headers, method, url, responseType} = options
     method ?= "GET"
     responseType ?= ""
 
     new Promise (resolve, reject) ->
       xhr = new XMLHttpRequest()
-      xhr.open(method, path, true)
+      xhr.open(method, url, true)
       xhr.responseType = responseType
 
       if headers
@@ -35,11 +35,11 @@ module.exports = ->
       handler args...
 
   configure = (optionDefaults) ->
-    (path, options={}) ->
-      if typeof path is "object"
-        options = path
+    (url, options={}) ->
+      if typeof url is "object"
+        options = url
       else
-        options.path = path
+        options.url = url
 
       defaults options, optionDefaults
 
