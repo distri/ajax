@@ -2,14 +2,19 @@
 
 module.exports = ->
   ajax = (options={}) ->
-    {headers, method, url, responseType} = options
+    {data, headers, method, url, responseType, timeout, withCredentials} = options
+    data ?= ""
     method ?= "GET"
     responseType ?= ""
+    timeout ?= 0
+    withCredentials ?= false
 
     new Promise (resolve, reject) ->
       xhr = new XMLHttpRequest()
       xhr.open(method, url, true)
       xhr.responseType = responseType
+      xhr.timeout = timeout
+      xhr.withCredentialls = withCredentials
 
       if headers
         Object.keys(headers).forEach (header) ->
@@ -28,7 +33,7 @@ module.exports = ->
         reject e
         complete e, xhr, options
 
-      xhr.send()
+      xhr.send(data)
 
   complete = (args...) ->
     completeHandlers.forEach (handler) ->
