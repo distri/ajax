@@ -26,6 +26,11 @@ window["distri/ajax:master"]({
       "path": "test/test.coffee",
       "content": "Ajax = require \"../main\"\n\ndescribe \"Ajax\", ->\n  it \"should getJSON\", (done) ->\n    Ajax.getJSON(\"https://api.github.com/users\")\n    .then (data) ->\n      assert data[0].id is 1\n      assert data[0].login is \"mojombo\"\n\n      done()\n",
       "mode": "100644"
+    },
+    "pixie.cson": {
+      "path": "pixie.cson",
+      "content": "version: \"0.1.0\"\n",
+      "mode": "100644"
     }
   },
   "distribution": {
@@ -43,11 +48,17 @@ window["distri/ajax:master"]({
       "path": "test/test",
       "content": "(function() {\n  var Ajax;\n\n  Ajax = require(\"../main\");\n\n  describe(\"Ajax\", function() {\n    return it(\"should getJSON\", function(done) {\n      return Ajax.getJSON(\"https://api.github.com/users\").then(function(data) {\n        assert(data[0].id === 1);\n        assert(data[0].login === \"mojombo\");\n        return done();\n      });\n    });\n  });\n\n}).call(this);\n",
       "type": "blob"
+    },
+    "pixie": {
+      "path": "pixie",
+      "content": "module.exports = {\"version\":\"0.1.0\"};",
+      "type": "blob"
     }
   },
   "progenitor": {
     "url": "https://danielx.net/editor/"
   },
+  "version": "0.1.0",
   "entryPoint": "main",
   "repository": {
     "branch": "master",
