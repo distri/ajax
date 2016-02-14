@@ -1,44 +1,59 @@
 {extend, defaults} = require "./util"
 
-ajax = (path, options={}) ->
-  {headers, method, responseType} = options
-  method ?= "GET"
-  responseType ?= ""
+module.exports = ->
+  ajax = (options={}) ->
+    {headers, method, path, responseType} = options
+    method ?= "GET"
+    responseType ?= ""
 
-  new Promise (resolve, reject) ->
-    xhr = new XMLHttpRequest()
-    xhr.open(method, path, true)
-    xhr.responseType = responseType
+    new Promise (resolve, reject) ->
+      xhr = new XMLHttpRequest()
+      xhr.open(method, path, true)
+      xhr.responseType = responseType
 
-    if headers
-      Object.keys(headers).forEach (header) ->
-        value = headers[header]
-        xhr.setRequestHeader header, value
+      if headers
+        Object.keys(headers).forEach (header) ->
+          value = headers[header]
+          xhr.setRequestHeader header, value
 
-    xhr.onload = (e) ->
-      if (200 <= this.status < 300) or this.status is 304
-        try
+      xhr.onload = (e) ->
+        if (200 <= this.status < 300) or this.status is 304
           resolve this.response
-        catch error
-          reject error
-      else
+          complete e, xhr, options
+        else
+          reject e
+          complete e, xhr, options
+
+      xhr.onerror = (e) -> 
         reject e
+        complete e, xhr, options
 
-    xhr.onerror = reject
-    xhr.send()
+      xhr.send()
 
-configure = (optionDefaults) ->
-  (path, options={}) ->
-    defaults options, optionDefaults
+  complete = (args...) ->
+    completeHandlers.forEach (handler) ->
+      handler args...
 
-    ajax(path, options)
+  configure = (optionDefaults) ->
+    (path, options={}) ->
+      if typeof path is "object"
+        options = path
+      else
+        options.path = path
 
-extend ajax,
-  ajax: ajax
-  getJSON: configure
-    responseType: "json"
+      defaults options, optionDefaults
 
-  getBlob: configure
-    responseType: "blob"
+      ajax(options)
 
-module.exports = ajax
+  completeHandlers = []
+
+  extend ajax,
+    ajax: configure {}
+    complete: (handler) ->
+      completeHandlers.push handler
+
+    getJSON: configure
+      responseType: "json"
+
+    getBlob: configure
+      responseType: "blob"
