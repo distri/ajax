@@ -2,16 +2,18 @@
 
 module.exports = ->
   ajax = (options={}) ->
-    {data, headers, method, url, responseType, timeout, withCredentials} = options
+    {data, headers, method, overrideMimeType, password, url, responseType, timeout, user, withCredentials} = options
     data ?= ""
     method ?= "GET"
+    password ?= ""
     responseType ?= ""
     timeout ?= 0
+    user ?= ""
     withCredentials ?= false
 
     new Promise (resolve, reject) ->
       xhr = new XMLHttpRequest()
-      xhr.open(method, url, true)
+      xhr.open(method, url, true, user, password)
       xhr.responseType = responseType
       xhr.timeout = timeout
       xhr.withCredentialls = withCredentials
@@ -20,6 +22,9 @@ module.exports = ->
         Object.keys(headers).forEach (header) ->
           value = headers[header]
           xhr.setRequestHeader header, value
+
+      if overrideMimeType
+        xhr.overrideMimeType overrideMimeType
 
       xhr.onload = (e) ->
         if (200 <= this.status < 300) or this.status is 304

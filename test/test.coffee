@@ -4,7 +4,9 @@ describe "Ajax", ->
   it "should getJSON", (done) ->
     ajax = Ajax()
 
-    ajax.getJSON("https://api.github.com/users")
+    ajax
+      url: "https://api.github.com/users"
+      responseType: "json"
     .then (data) ->
       assert data[0].id is 1
       assert data[0].login is "mojombo"
