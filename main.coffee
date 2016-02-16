@@ -31,11 +31,11 @@ module.exports = ->
           resolve this.response
           complete e, xhr, options
         else
-          reject e
+          reject xhr
           complete e, xhr, options
 
-      xhr.onerror = (e) -> 
-        reject e
+      xhr.onerror = (e) ->
+        reject xhr
         complete e, xhr, options
 
       xhr.send(data)
