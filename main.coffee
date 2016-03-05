@@ -1,5 +1,7 @@
 {extend, defaults} = require "./util"
 
+require "./shims"
+
 module.exports = ->
   ajax = (options={}) ->
     {data, headers, method, overrideMimeType, password, url, responseType, timeout, user, withCredentials} = options
@@ -11,7 +13,7 @@ module.exports = ->
     user ?= ""
     withCredentials ?= false
 
-    new Promise (resolve, reject) ->
+    new ProgressPromise (resolve, reject, progress) ->
       xhr = new XMLHttpRequest()
       xhr.open(method, url, true, user, password)
       xhr.responseType = responseType
@@ -37,6 +39,8 @@ module.exports = ->
       xhr.onerror = (e) ->
         reject xhr
         complete e, xhr, options
+
+      xhr.onprogress = progress
 
       xhr.send(data)
 
