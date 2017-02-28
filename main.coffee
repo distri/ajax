@@ -1,5 +1,3 @@
-{extend, defaults} = require "./util"
-
 require "./shims"
 
 module.exports = ->
@@ -61,7 +59,7 @@ module.exports = ->
 
   completeHandlers = []
 
-  extend ajax,
+  Object.assign ajax,
     ajax: configure {}
     complete: (handler) ->
       completeHandlers.push handler
@@ -71,3 +69,11 @@ module.exports = ->
 
     getBlob: configure
       responseType: "blob"
+
+defaults = (target, objects...) ->
+  for object in objects
+    for name of object
+      unless target.hasOwnProperty(name)
+        target[name] = object[name]
+
+  return target
